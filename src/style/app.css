@@ -1,0 +1,41 @@
+.app {
+}
+.tsinfolink {
+    position:absolute;
+    right:0px;
+    width:5%;
+}
+
+.x-unselectable {
+    user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.x-grid-cell-inner {
+    white-space: nowrap;
+    zoom: 1;
+}
+
+.x-tree-elbow-img, .x-tree-icon {
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    vertical-align: top;
+}
+
+.sch-ganttpanel .x-tree-panel .x-tree-icon-parent, .sch-ganttpanel .x-tree-panel .x-tree-icon-leaf {
+    background: none;
+    width: 0;
+}
+
+td.sch-timetd .x-grid-cell-inner {
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+    cursor: default;
+    overflow: visible;
+}
+

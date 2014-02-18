@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Timeline With Dependencies</title>
+    <!--  (c) 2013 Rally Software Development Corp.  All Rights Reserved. -->
+    <!--  Build Date: Mon Feb 17 2014 17:54:33 GMT-0800 (PST) -->
+    
+    <script type="text/javascript">
+        var APP_BUILD_DATE = "Mon Feb 17 2014 17:54:33 GMT-0800 (PST)";
+        var CHECKSUM = [%= checksum %];
+    </script>
+    
+    <script type="text/javascript" src="/apps/x/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function() {
+            
+            
+               Rally.launchApp('CustomApp', {
+                   name: 'Timeline With Dependencies'
+               });
+        });
+    </script>
+    
+    <style type="text/css">
+
+.app {
+}
+.tsinfolink {
+    position:absolute;
+    right:0px;
+    width:5%;
+}
+
+.x-unselectable {
+    user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.x-grid-cell-inner {
+    white-space: nowrap;
+    zoom: 1;
+}
+
+.x-tree-elbow-img, .x-tree-icon {
+    background-repeat: no-repeat;
+    background-position: 0 center;
+    vertical-align: top;
+}
+
+.sch-ganttpanel .x-tree-panel .x-tree-icon-parent, .sch-ganttpanel .x-tree-panel .x-tree-icon-leaf {
+    background: none;
+    width: 0;
+}
+
+td.sch-timetd .x-grid-cell-inner {
+    position: relative;
+    padding-left: 0;
+    padding-right: 0;
+    cursor: default;
+    overflow: visible;
+}
+
+
+    </style>
+
+</head>
+<body></body>
+</html>

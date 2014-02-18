@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= name %></title>
+    <script type="text/javascript">
+        var APP_BUILD_DATE = "<%= new Date() %>";
+    </script>
+    
+    <script type="text/javascript" src="<%= server %>/apps/<%= sdk %>/sdk-debug.js"></script>
+    <script type="text/javascript" src="<%= server %>/slm/js-lib/ext-gantt/2.2.15/gnt-all.js"></script>
+    <script type="text/javascript" src="<%= server %>/slm/js/alm/src/ui/timeline/TaskModelFactory.js"></script>
+
+    <script type="text/javascript" src="<%= server %>/slm/js/alm/src/ui/timeline/Timeline.js"></script>
+    <script type="text/javascript" src="<%= server %>/slm/js/alm/src/ui/timeline/PrintTimelineTemplate.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function() {
+            Rally.loadScripts(<%= JSON.stringify(js_files) %>,
+	            function() {
+	                Rally.launchApp('<%= className %>', {
+	                    name: '<%= name %>'
+	                })
+	            }, true);
+        });
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="<%= server %>/slm/pack/combined.css.h-316466415.pack">
+    <!--
+    <link rel="stylesheet" type="text/css" href="<%= server %>/slm/pack/combined.css.h-458667689.pack">
+    <link rel="stylesheet" type="text/css" href="<%= server %>/slm/pack/combined.css.h-540919694.pack">
+    <link rel="stylesheet" type="text/css" href="<%= server %>/slm/pack/combined.css.h482711781.pack">
+    -->
+    <link rel="stylesheet" type="text/css" href="<%= server %>/slm/js-lib/rui/builds/rui/resources/css/rui-fonts.css">
+
+
+<%
+    _.each( css_files, function(element) { 
+        print('<link rel="stylesheet" type="text/css" href="' + element + '">'); 
+     });
+    
+%>
+
+</head>
+<body></body>
+</html>
