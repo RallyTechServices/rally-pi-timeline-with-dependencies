@@ -9,7 +9,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         'Rally.ui.ButtonSlider',
         'Rally.util.HealthColorCalculator',
         'Rally.ui.EmptyTextFactory',
-        'Rally.alm.ui.timeline.Timeline'
+        'Rally.alm.ui.timeline.Timeline',
+        'DependencyTimeline'
     ],
     alias: 'widget.almportfolioitemtimeline',
 
@@ -281,66 +282,53 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     getZoomLevel: function () {
         return this.zoomLevel || this.getDefaultZoomLevel();
     },
-
-    _createTypeComboBox: function() {
-        console.log("creating typeComboBox");
-        var typeComboBox = Ext.create('Rally.ui.combobox.ComboBox', {
-            fieldLabel: 'Type',
-            labelWidth: 30,
-            width:140,
-            value: this.type,
-            storeConfig:{
-                remoteFilter: true,
-                model: 'TypeDefinition',
-                sorters:{
-                    property:'Ordinal',
-                    direction:'Desc'
-                },
-                filters: [
-                    {
-                        property: 'Parent.Name',
-                        operator: '=',
-                        value: 'Portfolio Item'
-                    },
-                    {
-                        property: 'Creatable',
-                        operator: '=',
-                        value: 'true'
-                    }
-                ],
-                listeners: {
-                    scope: this,
-                    load: function(response, data){
-                        var selectedType = typeComboBox.getRecord();
-                        if(!selectedType){
-                            var firstRecord = typeComboBox.getStore().first();
-                            typeComboBox.setValue(firstRecord, false);
-                        }
-
-                        var typeNames = [];
-                        Ext.each(data, function(value) {
-                            typeNames.push(value.get('TypePath'));
-                        });
-                        
-                        console.log(" typeNames",typeNames);
-
-                        Rally.data.ModelFactory.getModels({
-                            types : typeNames,
-                            context: this.context,
-                            success: this._onModelsRetrieved, scope:this
-                        });
-                       
-                    }
-                }
+    _createTypeComboBox: function() {        
+        var typeComboBox = Ext.create('Ext.container.Container',{ tpl: " <tpl>{Name}</tpl>"});
+        
+        Ext.create('Rally.data.wsapi.Store',{
+            model: 'TypeDefinition',
+            sorters:{
+                property:'Ordinal',
+                direction:'Asc'
             },
-
-            listeners:{
-                select:this._onTypeSelect,
-                scope:this
+            limit: 1,
+            pageSize: 1,
+            filters: [
+                {
+                    property: 'Parent.Name',
+                    operator: '=',
+                    value: 'Portfolio Item'
+                },
+                {
+                    property: 'Creatable',
+                    operator: '=',
+                    value: 'true'
+                }
+            ],
+            autoLoad: true,
+            listeners: {
+                scope: this,
+                load: function(store, types){
+                    var selectedType = types[0];
+                    
+                    var typeNames = [];
+                    Ext.each(types, function(value) {
+                        typeNames.push(value.get('TypePath'));
+                    });
+                    
+                    Rally.data.ModelFactory.getModels({
+                        types : typeNames,
+                        context: this.context,
+                        success: this._onModelsRetrieved, scope:this
+                    });
+                    
+                    typeComboBox.update(selectedType.getData());
+                    typeComboBox.getRecord = function() { return selectedType; };
+                    typeComboBox.getValue = function() { return typeNames[0]; };                    
+                }
             }
         });
-
-        typeComboBox.getStore().load();
+        
         return typeComboBox;
     },
 
@@ -362,7 +350,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _createTimeline: function() {
-        this.timeline = Ext.create('Rally.alm.ui.timeline.Timeline', this._getTimelineConfig());
+        //this.timeline = Ext.create('Rally.alm.ui.timeline.Timeline', this._getTimelineConfig());
+        this.timeline = Ext.create('DependencyTimeline', this._getTimelineConfig());
         window.tl=this.timeline;
         this.insert(1, this.timeline);
     },
@@ -457,6 +446,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _getModelForTypeRecord: function(record) {
+        console.log("models ",this.models);
         return this.models[record.get('TypePath')];
     },
 
