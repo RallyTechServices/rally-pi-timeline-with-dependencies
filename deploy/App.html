@@ -3,11 +3,11 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2014 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Wed Feb 26 2014 20:44:04 GMT-0800 (PST) -->
+    <!--  Build Date: Wed Feb 26 2014 21:09:25 GMT-0800 (PST) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Wed Feb 26 2014 20:44:04 GMT-0800 (PST)";
-        var CHECKSUM = 186629850708;
+        var APP_BUILD_DATE = "Wed Feb 26 2014 21:09:25 GMT-0800 (PST)";
+        var CHECKSUM = 188487969022;
     </script>
     
     <script type="text/javascript" src="/apps/x/sdk.js"></script>
@@ -946,12 +946,18 @@ Ext.define('DependencyTimeline',{
     _getCollectionFromRecord: function(story,field_name) {
         var deferred = Ext.create('Deft.Deferred');
         story.getCollection(field_name).load({
-            fetch: ['Feature','ObjectID'],
+            fetch: ['Feature','ObjectID','Blocked'],
             callback: function(predecessors,operation,success){
                 var dependencies = [];
                 Ext.Array.each(predecessors,function(predecessor){
                     if ( predecessor.get('Feature') ) {
+                        var class_name = "dependency";
+                        if ( predecessor.get('Blocked')) {
+                            class_name = "dependency-blocked";
+                            console.log("BLOCKED!");
+                        }
                         dependencies.push({
+                            "Cls": class_name,
                             "From":predecessor.get('Feature').ObjectID,
                             "To"  :story.get('Feature').ObjectID,
                             "Type":3
@@ -1604,7 +1610,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                                     return Rally.nav.Manager.getDetailUrl(values);
                                 },
                                 showNotRecentlyUpdated: function() {
-                                    console.log('show not recently updated', value, metaData, record);
                                     var icon = " ";
                                     if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
                                         icon = "<span class='icon-history'> </span>";
@@ -2031,6 +2036,17 @@ td.sch-timetd .x-grid-cell-inner {
 .sch-ganttpanel .x-tree-panel .x-grid-body table td {
     height: 35px;
 }
+
+.dependency-line, .dependency-arrow
+{
+    border-color: green;
+}
+
+.dependency-blocked-line, .dependency-blocked-arrow
+{
+    border-color: red;
+}
+
     </style>
 
 </head>

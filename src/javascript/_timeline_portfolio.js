@@ -638,7 +638,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                                     return Rally.nav.Manager.getDetailUrl(values);
                                 },
                                 showNotRecentlyUpdated: function() {
-                                    console.log('show not recently updated', value, metaData, record);
                                     var icon = " ";
                                     if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
                                         icon = "<span class='icon-history'> </span>";

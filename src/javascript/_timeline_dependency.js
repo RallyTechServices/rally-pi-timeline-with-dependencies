@@ -81,12 +81,18 @@ Ext.define('DependencyTimeline',{
     _getCollectionFromRecord: function(story,field_name) {
         var deferred = Ext.create('Deft.Deferred');
         story.getCollection(field_name).load({
-            fetch: ['Feature','ObjectID'],
+            fetch: ['Feature','ObjectID','Blocked'],
             callback: function(predecessors,operation,success){
                 var dependencies = [];
                 Ext.Array.each(predecessors,function(predecessor){
                     if ( predecessor.get('Feature') ) {
+                        var class_name = "dependency";
+                        if ( predecessor.get('Blocked')) {
+                            class_name = "dependency-blocked";
+                            console.log("BLOCKED!");
+                        }
                         dependencies.push({
+                            "Cls": class_name,
                             "From":predecessor.get('Feature').ObjectID,
                             "To"  :story.get('Feature').ObjectID,
                             "Type":3

@@ -3,10 +3,10 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2013 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Wed Feb 26 2014 20:44:05 GMT-0800 (PST) -->
+    <!--  Build Date: Wed Feb 26 2014 21:09:25 GMT-0800 (PST) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Wed Feb 26 2014 20:44:05 GMT-0800 (PST)";
+        var APP_BUILD_DATE = "Wed Feb 26 2014 21:09:25 GMT-0800 (PST)";
         var CHECKSUM = [%= checksum %];
     </script>
     
@@ -92,6 +92,17 @@ td.sch-timetd .x-grid-cell-inner {
 .sch-ganttpanel .x-tree-panel .x-grid-body table td {
     height: 35px;
 }
+
+.dependency-line, .dependency-arrow
+{
+    border-color: green;
+}
+
+.dependency-blocked-line, .dependency-blocked-arrow
+{
+    border-color: red;
+}
+
     </style>
 
 </head>

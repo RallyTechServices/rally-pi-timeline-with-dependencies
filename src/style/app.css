@@ -66,3 +66,13 @@ td.sch-timetd .x-grid-cell-inner {
 .sch-ganttpanel .x-tree-panel .x-grid-body table td {
     height: 35px;
 }
+
+.dependency-line, .dependency-arrow
+{
+    border-color: green;
+}
+
+.dependency-blocked-line, .dependency-blocked-arrow
+{
+    border-color: red;
+}
