@@ -395,3 +395,28 @@ Ext.override(Gnt.view.Gantt, {
         return cellResult;
     }
 });
+
+// Add more fields for the PIs we pull
+Ext.override(Rally.alm.ui.timeline.TaskModelFactory,{
+    wsapiFieldsToInclude: {
+            portfolioitem: [
+                'PortfolioItemType',
+                'FormattedID',
+                'PercentDoneByStoryCount',
+                'PercentDoneByStoryPlanEstimate',
+                'ActualStartDate',
+                'ActualEndDate',
+                'Project',
+                'Workspace',
+                'PlannedStartDate',
+                'PlannedEndDate',
+                'AcceptedLeafStoryCount',
+                'AcceptedLeafStoryPlanEstimateTotal',
+                'UnEstimatedLeafStoryCount',
+                'LeafStoryPlanEstimateTotal',
+                'DirectChildrenCount',
+                'LeafStoryCount',
+                'LastUpdateDate'
+            ]
+        }
+});

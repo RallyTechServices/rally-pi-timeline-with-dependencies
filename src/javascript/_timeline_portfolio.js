@@ -419,7 +419,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             'Workspace',
             'FormattedID',
             'PercentDoneByStoryCount',
-            'PercentDoneByStoryPlanEstimate'
+            'PercentDoneByStoryPlanEstimate',
+            'LastUpdateDate'
         ];
 
 
@@ -631,10 +632,18 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 menuDisabled:true,
                 renderer:function (value, metaData,record) {
                     return Ext.create('Ext.XTemplate',
-                            '<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
+                            '{[this.showNotRecentlyUpdated()]}<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
                             {
                                 createDetailUrl:function (values) {
                                     return Rally.nav.Manager.getDetailUrl(values);
+                                },
+                                showNotRecentlyUpdated: function() {
+                                    console.log('show not recently updated', value, metaData, record);
+                                    var icon = " ";
+                                    if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
+                                        icon = "<span class='icon-history'> </span>";
+                                    }
+                                    return icon;
                                 }
                             }).apply(record.data);
                 }

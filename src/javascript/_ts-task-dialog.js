@@ -50,6 +50,13 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
         if ( this.artifact ) { 
             this.planned_start_date = this.artifact.get('PlannedStartDate');
             this.planned_end_date = this.artifact.get('PlannedEndDate');
+            this.last_update_date = this.artifact.get('LastUpdateDate');
+            
+            this.down('panel').add({
+                xtype:'container',
+                html: 'Last changed ' + Rally.util.DateTime.getDifference(new Date(), this.last_update_date,'day') + ' days ago'
+            });
+            
             this.down('panel').add({
                 xtype:'rallydatefield',
                 value: this.planned_start_date,
