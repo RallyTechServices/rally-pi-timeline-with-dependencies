@@ -13,7 +13,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
         'Gnt.plugin.Printable'
     ],
 
-    bubbleEvents:['add','remove','zoom'],
+    bubbleEvents:['add','remove','zoom','taskclick'],
 
     statics:{
         errorMessages:{
@@ -160,12 +160,10 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             },
             recalculateParents: false
         }, config.taskStoreConfig);
-
+        
         taskStoreConfig.model = Rally.alm.ui.timeline.TaskModelFactory.getTaskModel({
             wsapiModel: taskStoreConfig.model
         });
-
-        console.log("taskStoreConfig ",taskStoreConfig);
         
         var taskStore = Ext.create("Gnt.data.TaskStore", taskStoreConfig);
         taskStore.on('load', this._onLoaded, this);

@@ -151,19 +151,20 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     _onAfterRender:function () {
         this.typeComboBox = this._createTypeComboBox();
 
-        this.getEl().on('click', function (event, el) {
-            el = Ext.get(el);
-            var record = this._getRecordFor(el, this.timeline.getSchedulingView());
-            Ext4.create('Rally.ui.popover.PercentDonePopover', {
-                target: el,
-                percentDoneData: record.data,
-                percentDoneName: 'PercentDoneByStoryCount',
-                piRef: record.data._ref,
-                viewportPadding: [15,25,15,215]
-            });
-        }, this, {
-            delegate: '.sch-gantt-baseline-item'
-        });
+        
+//        this.getEl().on('click', function (event, el) {
+//            el = Ext.get(el);
+//            var record = this._getRecordFor(el, this.timeline.getSchedulingView());
+//            Ext.create('Rally.ui.popover.PercentDonePopover', {
+//                target: el,
+//                percentDoneData: record.data,
+//                percentDoneName: 'PercentDoneByStoryCount',
+//                piRef: record.data._ref,
+//                viewportPadding: [15,25,15,215]
+//            });
+//        }, this, {
+//            delegate: '.sch-gantt-baseline-item'
+//        });
     },
 
     _onModelsRetrieved:function (models) {
@@ -446,7 +447,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _getModelForTypeRecord: function(record) {
-        console.log("models ",this.models);
         return this.models[record.get('TypePath')];
     },
 
@@ -570,7 +570,13 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             enableDragCreation: false,
             enableDependencyDragDrop: false,
             resizeHandles: 'none',
-            trackHeaderOver: false
+            trackHeaderOver: false,
+            listeners: {
+                scope: this,
+                taskclick: function(gantt,taskRecord,e,eOpts) {
+                    //
+                }
+            }
         };
     },
 

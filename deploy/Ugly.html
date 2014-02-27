@@ -3,10 +3,10 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2013 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Tue Feb 18 2014 20:42:28 GMT-0800 (PST) -->
+    <!--  Build Date: Wed Feb 26 2014 20:06:29 GMT-0800 (PST) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Tue Feb 18 2014 20:42:28 GMT-0800 (PST)";
+        var APP_BUILD_DATE = "Wed Feb 26 2014 20:06:29 GMT-0800 (PST)";
         var CHECKSUM = [%= checksum %];
     </script>
     
@@ -57,6 +57,30 @@
     width: 0;
 }
 
+.sch-ganttpanel .sch-gantt-label {
+    color: #333 !important;
+}
+
+.sch-gantt-label {
+    color: #999;
+    height: 16px;
+    white-space: nowrap;
+}
+
+.sch-gantt-progress-bar {
+    background: #7971e2 url(/slm/js-lib/ext-gantt/2.2.15/resources/images/transp-1px.png) repeat-x left top;
+    overflow: hidden;
+    height: 100%;
+}
+
+.sch-ganttpanel .sch-timelineview .x-grid-row .x-grid-cell.sch-timetd {
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #c6c6c6 !important;
+    border-left: none !important;
+    height: 35px;
+}
+
 td.sch-timetd .x-grid-cell-inner {
     position: relative;
     padding-left: 0;
@@ -65,7 +89,9 @@ td.sch-timetd .x-grid-cell-inner {
     overflow: visible;
 }
 
-
+.sch-ganttpanel .x-tree-panel .x-grid-body table td {
+    height: 35px;
+}
     </style>
 
 </head>
