@@ -18,15 +18,18 @@ Ext.define('CustomApp', {
             context: me.getContext(),
             listeners: {
                 scope: this,
-                taskclick: function( gantt, taskRecord, e, eOpts ) {
+                taskclick: function( gantt, taskRecord, evt, eOpts ) {
                     this.logger.log("clicked ", taskRecord);
-                    this.showDialog(taskRecord,gantt);
+                    this.showTaskDialog(taskRecord,gantt);
+                },
+                dependencydblclick: function(gantt, record, evt, target, eOpts) {
+                	this.showDependencyDialog(record,gantt);
                 }
             }
         });
     },
-    showDialog: function(taskRecord,gantt){
-        this.logger.log('showDialog ', taskRecord.get('PlannedStartDate'),taskRecord.get('PlannedEndDate'));
+    showTaskDialog: function(taskRecord,gantt){
+        this.logger.log('showTaskDialog ', taskRecord.get('PlannedStartDate'),taskRecord.get('PlannedEndDate'));
         if ( this.dialog ) { this.dialog.destroy(); }
         this.dialog = Ext.create('Rally.technicalservices.dialog.TaskDialog',{
             artifact: taskRecord,
@@ -40,6 +43,15 @@ Ext.define('CustomApp', {
                     artifact.save();
                 }
             }
+        });
+        this.dialog.show();
+    },
+    showDependencyDialog: function(dependencyRecord,gantt){
+        this.logger.log('showDependencyDialog ', dependencyRecord);
+        if ( this.dialog ) { this.dialog.destroy(); }
+        this.dialog = Ext.create('Rally.technicalservices.dialog.DependencyDialog',{
+            dependencyRecord: dependencyRecord,
+            title: 'Dependency'
         });
         this.dialog.show();
     }

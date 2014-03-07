@@ -57,11 +57,18 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
                 html: 'Last changed ' + Rally.util.DateTime.getDifference(new Date(), this.last_update_date,'day') + ' days ago'
             });
             
-            this.down('panel').add({
+            var container = this.down('panel').add({
+            	xtype:'container',
+            	layout: { type: 'hbox' }
+            });
+            
+            
+            container.add({
                 xtype:'rallydatefield',
                 value: this.planned_start_date,
                 fieldLabel: 'Planned Start Date',
                 labelAlign: 'top',
+                margin: 5,
                 listeners: {
                     scope: this,
                     change: function(db, new_value) {
@@ -70,11 +77,12 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
                 }
             });
             
-            this.down('panel').add({
+            container.add({
                 xtype:'rallydatefield',
                 value: this.planned_end_date,
                 fieldLabel: 'Planned End Date',
                 labelAlign: 'top',
+                margin: 5,
                 listeners: {
                     scope: this,
                     change: function(db, new_value) {

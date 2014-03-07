@@ -13,7 +13,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
         'Gnt.plugin.Printable'
     ],
 
-    bubbleEvents:['add','remove','zoom','taskclick'],
+    bubbleEvents:['add','remove','zoom','taskclick','dependencydblclick'],
 
     statics:{
         errorMessages:{

@@ -533,14 +533,16 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         }
 
         return {
-            plugins: new Gnt.plugin.Printable({
+            plugins: [ 
+              new Gnt.plugin.Printable({
                 mainTpl: Ext.create('Rally.alm.ui.timeline.PrintTimelineTemplate', {
                     projectName: projectName,
                     scopeUp: scopeUp,
                     scopeDown: scopeDown,
                     typeName: this.typeComboBox.rawValue
                 })
-            }),
+              })
+            ],
             taskStoreConfig: taskStoreConfig,
             leftLabelField: '',
             baselineStartDateField: this.actualStartDateField,
