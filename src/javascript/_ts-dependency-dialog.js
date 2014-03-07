@@ -87,7 +87,6 @@ Ext.define('Rally.technicalservices.dialog.DependencyDialog',{
         Deft.Promise.all(promises).then({
             scope: this,
             success: function(records) {
-                console.log("back with", records);
                 link_summary.update(records[0]);
                 var links = records[1];
                 link_items_container.update('');
@@ -130,7 +129,6 @@ Ext.define('Rally.technicalservices.dialog.DependencyDialog',{
             listeners: {
                 scope: this,
                 load: function(data,stories) {
-                    console.log("stories",stories);
                     if ( stories.length > 0 ) {
                         var promises = [];
                         Ext.Array.each(stories,function(story){

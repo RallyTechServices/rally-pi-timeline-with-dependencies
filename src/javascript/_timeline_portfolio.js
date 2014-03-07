@@ -110,7 +110,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
      * Resize the timeline to fill the available area when the window resizes
      */
     _resizeTimelineToFit:function (windowWidth, windowHeight) {
-
         /* don't let the timeline shrink away to nothing on small resolutions */
         var minHeight = 250;
 
@@ -127,7 +126,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
 
         var timelineRegion = Ext.util.Region.getRegion(this.timeline.el);
 
-        var legendHeight = this.down('#timelineLegend').getHeight();
+        var legendHeight = this.down('#timelineLegend').getHeight() + 200;
 
         //need to know the footer height to know how much space we have
         var footerHeight = Ext.get('footer').getHeight();
@@ -145,6 +144,44 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         this.timeline.setHeight(height);
 
         this.timeline.setWidth(windowWidth - 20);
+
+    },
+
+    _resizeTimelineHeight:function (windowHeight) {
+        console.log('_resizeTimelineHeight',windowHeight);
+        /* don't let the timeline shrink away to nothing on small resolutions */
+        var minHeight = 250;
+
+        if (!this.timeline || !this.timeline.el) {
+            return;
+        }
+
+        if (!Ext.isDefined(windowHeight)) {
+            windowHeight = Ext.getBody().getHeight();
+        } 
+
+        var legendHeight = this.down('#timelineLegend').getHeight() + 50;
+
+        //need to know the footer height to know how much space we have
+        var footerHeight = 0;
+        if ( Ext.get('footer') ) {
+            footerHeight = Ext.get('footer').getHeight();
+        }
+//        var devFooter = Ext.get('devFooter');
+//        if (devFooter) {
+//            footerHeight += devFooter.getHeight();
+//        }
+
+          var height = windowHeight - legendHeight - footerHeight;
+//          var height = windowHeight - timelineRegion.top - legendHeight - footerHeight;
+//
+        if (height < minHeight) {
+            height = minHeight;
+        }
+
+        console.log(windowHeight,legendHeight,footerHeight);
+        console.log("Total",height);
+        this.timeline.setHeight(height);
 
     },
 
@@ -601,9 +638,9 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
 
         this._expandedNode = undefined;
 
-        if (this.getFullScreen()) {
-            this._resizeTimelineToFit();
-        }
+        //if (this.getFullScreen()) {
+            this._resizeTimelineHeight(this.height);
+        //}
 
         if (Rally.BrowserTest) {
             Rally.BrowserTest.publishComponentReady(this);

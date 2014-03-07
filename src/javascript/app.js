@@ -16,6 +16,7 @@ Ext.define('CustomApp', {
         me.down('#display_box').add({
             xtype: 'almportfolioitemtimeline',
             context: me.getContext(),
+            height: Ext.getBody().getHeight(),
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {
