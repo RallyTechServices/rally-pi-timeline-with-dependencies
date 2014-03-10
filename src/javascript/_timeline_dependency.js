@@ -89,7 +89,6 @@ Ext.define('DependencyTimeline',{
                         var class_name = "dependency";
                         if ( predecessor.get('Blocked')) {
                             class_name = "dependency-blocked";
-                            console.log("BLOCKED!");
                         }
                         dependencies.push({
                             "Cls": class_name,

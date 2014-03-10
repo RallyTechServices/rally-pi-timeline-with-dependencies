@@ -40,7 +40,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         /**
          * @cfg {String} The current zoom level that will be shown.
          */
-        zoomLevel:'monthAndYear',
+        zoomLevel:'year',
         /**
          * @cfg {String}
          * the type to default the type dropdown to
@@ -148,7 +148,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _resizeTimelineHeight:function (windowHeight) {
-        console.log('_resizeTimelineHeight',windowHeight);
         /* don't let the timeline shrink away to nothing on small resolutions */
         var minHeight = 250;
 
@@ -178,9 +177,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         if (height < minHeight) {
             height = minHeight;
         }
-
-        console.log(windowHeight,legendHeight,footerHeight);
-        console.log("Total",height);
+        
         this.timeline.setHeight(height);
 
     },
@@ -259,6 +256,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _createZoomComponentItems: function() {
+        var me = this;
         return [
             {
                 xtype: 'label',
@@ -269,6 +267,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 xtype: 'rallybuttonslider',
                 cls: 'zoom-component',
                 itemId:'zoomButtonSlider',
+                
                 sliderConfig:{
                     value:this.getSliderValueFromZoom(this.getZoomLevel()),
                     increment:1,
@@ -457,7 +456,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             'FormattedID',
             'PercentDoneByStoryCount',
             'PercentDoneByStoryPlanEstimate',
-            'LastUpdateDate'
+            'LastUpdateDate',
+            'Parent'
         ];
 
 
@@ -685,10 +685,22 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                                 }
                             }).apply(record.data);
                 }
-            }
+            }/*,
+            {
+                header: 'Parent',
+                dataIndex: 'Parent',
+                renderer: function( value, metaData,record ) {
+                    console.log(value,record);
+                    return value.FormattedID;
+                }
+            }*/
         ];
     },
 
+    getState: function() {
+        return { zoomLevel: this.getSelectedZoomLevel().preset };
+    },
+    
     setWidth:function (w) {
         this.callParent(arguments);
         if (this.timeline) {

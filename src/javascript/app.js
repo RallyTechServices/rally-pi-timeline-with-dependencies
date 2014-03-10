@@ -17,6 +17,9 @@ Ext.define('CustomApp', {
             xtype: 'almportfolioitemtimeline',
             context: me.getContext(),
             height: Ext.getBody().getHeight(),
+            stateful: true,
+            stateId: 'rally.techservices.dependency.timeline',
+            stateEvents: ['zoom'],
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {

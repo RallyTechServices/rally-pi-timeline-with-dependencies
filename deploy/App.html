@@ -3,11 +3,11 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2014 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Thu Mar 06 2014 17:05:16 GMT-0800 (PST) -->
+    <!--  Build Date: Mon Mar 10 2014 16:21:26 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Thu Mar 06 2014 17:05:16 GMT-0800 (PST)";
-        var CHECKSUM = 2261152683080;
+        var APP_BUILD_DATE = "Mon Mar 10 2014 16:21:26 GMT-0700 (PDT)";
+        var CHECKSUM = 2267811702888;
     </script>
     
     <script type="text/javascript" src="/apps/x/sdk.js"></script>
@@ -954,7 +954,6 @@ Ext.define('DependencyTimeline',{
                         var class_name = "dependency";
                         if ( predecessor.get('Blocked')) {
                             class_name = "dependency-blocked";
-                            console.log("BLOCKED!");
                         }
                         dependencies.push({
                             "Cls": class_name,
@@ -1012,7 +1011,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         /**
          * @cfg {String} The current zoom level that will be shown.
          */
-        zoomLevel:'monthAndYear',
+        zoomLevel:'year',
         /**
          * @cfg {String}
          * the type to default the type dropdown to
@@ -1120,7 +1119,6 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _resizeTimelineHeight:function (windowHeight) {
-        console.log('_resizeTimelineHeight',windowHeight);
         /* don't let the timeline shrink away to nothing on small resolutions */
         var minHeight = 250;
 
@@ -1150,9 +1148,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
         if (height < minHeight) {
             height = minHeight;
         }
-
-        console.log(windowHeight,legendHeight,footerHeight);
-        console.log("Total",height);
+        
         this.timeline.setHeight(height);
 
     },
@@ -1231,6 +1227,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
     },
 
     _createZoomComponentItems: function() {
+        var me = this;
         return [
             {
                 xtype: 'label',
@@ -1241,6 +1238,7 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 xtype: 'rallybuttonslider',
                 cls: 'zoom-component',
                 itemId:'zoomButtonSlider',
+                
                 sliderConfig:{
                     value:this.getSliderValueFromZoom(this.getZoomLevel()),
                     increment:1,
@@ -1429,7 +1427,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             'FormattedID',
             'PercentDoneByStoryCount',
             'PercentDoneByStoryPlanEstimate',
-            'LastUpdateDate'
+            'LastUpdateDate',
+            'Parent'
         ];
 
 
@@ -1657,10 +1656,22 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                                 }
                             }).apply(record.data);
                 }
-            }
+            }/*,
+            {
+                header: 'Parent',
+                dataIndex: 'Parent',
+                renderer: function( value, metaData,record ) {
+                    console.log(value,record);
+                    return value.FormattedID;
+                }
+            }*/
         ];
     },
 
+    getState: function() {
+        return { zoomLevel: this.getSelectedZoomLevel().preset };
+    },
+    
     setWidth:function (w) {
         this.callParent(arguments);
         if (this.timeline) {
@@ -2207,6 +2218,9 @@ Ext.define('CustomApp', {
             xtype: 'almportfolioitemtimeline',
             context: me.getContext(),
             height: Ext.getBody().getHeight(),
+            stateful: true,
+            stateId: 'rally.techservices.dependency.timeline',
+            stateEvents: ['zoom'],
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {
