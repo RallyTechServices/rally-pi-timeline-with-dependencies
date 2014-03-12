@@ -86,16 +86,20 @@ Ext.define('DependencyTimeline',{
                 var dependencies = [];
                 Ext.Array.each(predecessors,function(predecessor){
                     if ( predecessor.get('Feature') ) {
-                        var class_name = "dependency";
-                        if ( predecessor.get('Blocked')) {
-                            class_name = "dependency-blocked";
+                        var from_oid = predecessor.get('Feature').ObjectID;
+                        var to_oid = story.get('Feature').ObjectID;
+                        if ( from_oid !== to_oid ) {
+                            var class_name = "dependency";
+                            if ( predecessor.get('Blocked')) {
+                                class_name = "dependency-blocked";
+                            }
+                            dependencies.push({
+                                "Cls": class_name,
+                                "From":from_oid,
+                                "To"  :to_oid,
+                                "Type":3
+                            });
                         }
-                        dependencies.push({
-                            "Cls": class_name,
-                            "From":predecessor.get('Feature').ObjectID,
-                            "To"  :story.get('Feature').ObjectID,
-                            "Type":3
-                        });
                     }
                 });
                 deferred.resolve(dependencies);

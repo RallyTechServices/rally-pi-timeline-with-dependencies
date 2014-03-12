@@ -165,7 +165,6 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             wsapiModel: taskStoreConfig.model
         });
         
-        console.log("task store config", taskStoreConfig);
         var taskStore = Ext.create("Gnt.data.TaskStore", taskStoreConfig);
         taskStore.on('load', this._onLoaded, this);
 

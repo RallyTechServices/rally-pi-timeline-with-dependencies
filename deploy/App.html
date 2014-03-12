@@ -3,11 +3,11 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2014 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Tue Mar 11 2014 19:28:16 GMT-0700 (PDT) -->
+    <!--  Build Date: Tue Mar 11 2014 19:43:40 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Tue Mar 11 2014 19:28:16 GMT-0700 (PDT)";
-        var CHECKSUM = 2290149090440;
+        var APP_BUILD_DATE = "Tue Mar 11 2014 19:43:40 GMT-0700 (PDT)";
+        var CHECKSUM = 2292916062635;
     </script>
     
     <script type="text/javascript" src="/apps/x/sdk.js"></script>
@@ -612,7 +612,6 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             wsapiModel: taskStoreConfig.model
         });
         
-        console.log("task store config", taskStoreConfig);
         var taskStore = Ext.create("Gnt.data.TaskStore", taskStoreConfig);
         taskStore.on('load', this._onLoaded, this);
 
@@ -964,16 +963,20 @@ Ext.define('DependencyTimeline',{
                 var dependencies = [];
                 Ext.Array.each(predecessors,function(predecessor){
                     if ( predecessor.get('Feature') ) {
-                        var class_name = "dependency";
-                        if ( predecessor.get('Blocked')) {
-                            class_name = "dependency-blocked";
+                        var from_oid = predecessor.get('Feature').ObjectID;
+                        var to_oid = story.get('Feature').ObjectID;
+                        if ( from_oid !== to_oid ) {
+                            var class_name = "dependency";
+                            if ( predecessor.get('Blocked')) {
+                                class_name = "dependency-blocked";
+                            }
+                            dependencies.push({
+                                "Cls": class_name,
+                                "From":from_oid,
+                                "To"  :to_oid,
+                                "Type":3
+                            });
                         }
-                        dependencies.push({
-                            "Cls": class_name,
-                            "From":predecessor.get('Feature').ObjectID,
-                            "To"  :story.get('Feature').ObjectID,
-                            "Type":3
-                        });
                     }
                 });
                 deferred.resolve(dependencies);
