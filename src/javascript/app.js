@@ -20,6 +20,7 @@ Ext.define('CustomApp', {
             stateful: true,
             stateId: 'rally.techservices.dependency.timeline',
             stateEvents: ['zoom'],
+            customQueryString: '( State.Name != "Done" )',
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {

@@ -3,11 +3,11 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2014 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Tue Mar 11 2014 19:43:40 GMT-0700 (PDT) -->
+    <!--  Build Date: Tue Mar 11 2014 19:46:11 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Tue Mar 11 2014 19:43:40 GMT-0700 (PDT)";
-        var CHECKSUM = 2292916062635;
+        var APP_BUILD_DATE = "Tue Mar 11 2014 19:46:11 GMT-0700 (PDT)";
+        var CHECKSUM = 2294043481279;
     </script>
     
     <script type="text/javascript" src="/apps/x/sdk.js"></script>
@@ -2250,6 +2250,7 @@ Ext.define('CustomApp', {
             stateful: true,
             stateId: 'rally.techservices.dependency.timeline',
             stateEvents: ['zoom'],
+            customQueryString: '( State.Name != "Done" )',
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {
