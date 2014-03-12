@@ -328,8 +328,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 property:'Ordinal',
                 direction:'Asc'
             },
-            limit: 1,
-            pageSize: 1,
+            limit: 2,
+            pageSize: 2,
             filters: [
                 {
                     property: 'Parent.Name',
@@ -457,7 +457,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             'PercentDoneByStoryCount',
             'PercentDoneByStoryPlanEstimate',
             'LastUpdateDate',
-            'Parent'
+            'Parent',
+            'Notes'
         ];
 
 
@@ -671,29 +672,41 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 menuDisabled:true,
                 renderer:function (value, metaData,record) {
                     return Ext.create('Ext.XTemplate',
-                            '{[this.showNotRecentlyUpdated()]}<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
+                        '{[this.showNotRecentlyUpdated()]}<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
+                        {
+                            createDetailUrl:function (values) {
+                                return Rally.nav.Manager.getDetailUrl(values);
+                            },
+                            showNotRecentlyUpdated: function() {
+                                var icon = " ";
+                                if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
+                                    icon = "<span class='icon-history'> </span>";
+                                }
+                                return icon;
+                            }
+                        }).apply(record.data);
+                }
+            },
+            {
+                xtype:'treecolumn',
+                header: 'Parent',
+                dataIndex: 'Notes', /* using another field because parent has special meaning */
+                sortable: true,
+                menuDisabled:true,
+                renderer: function( value, metaData,record ) {
+                    var display_value = "";
+                    if ( record.get("_Parent") ){
+                        display_value = Ext.create('Ext.XTemplate',
+                            '<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
                             {
                                 createDetailUrl:function (values) {
                                     return Rally.nav.Manager.getDetailUrl(values);
-                                },
-                                showNotRecentlyUpdated: function() {
-                                    var icon = " ";
-                                    if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
-                                        icon = "<span class='icon-history'> </span>";
-                                    }
-                                    return icon;
                                 }
-                            }).apply(record.data);
+                            }).apply(record.get("_Parent"));
+                    }
+                    return display_value;
                 }
-            }/*,
-            {
-                header: 'Parent',
-                dataIndex: 'Parent',
-                renderer: function( value, metaData,record ) {
-                    console.log(value,record);
-                    return value.FormattedID;
-                }
-            }*/
+            }
         ];
     },
 

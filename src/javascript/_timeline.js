@@ -150,7 +150,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             autoLoad: true,
             sorters: [
                 {
-                    property: 'Name',
+                    property: 'Parent',
                     direction: 'DESC'
                 }
             ],
@@ -165,6 +165,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             wsapiModel: taskStoreConfig.model
         });
         
+        console.log("task store config", taskStoreConfig);
         var taskStore = Ext.create("Gnt.data.TaskStore", taskStoreConfig);
         taskStore.on('load', this._onLoaded, this);
 
@@ -269,6 +270,18 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
     },
 
     _onLoaded: function(taskStore, model, records) {
+        Ext.Array.each(records,function(record){
+            // put the parent back for columns
+            record.set("_Parent",record.raw.Parent);
+            // put the parent id in for sorting
+            if ( record.raw.Parent ){
+                record.set("Notes", record.raw.Parent.FormattedID);
+            } else { 
+                record.set("Notes", "-");
+            }
+        });
+        taskStore.sort({ property: 'Notes', direction: 'ASC' });
+        
         if (this.isVisible()) {
             this._ieFixHeaderWidthComputeIssue();
 

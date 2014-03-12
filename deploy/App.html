@@ -3,11 +3,11 @@
 <head>
     <title>Timeline With Dependencies</title>
     <!--  (c) 2014 Rally Software Development Corp.  All Rights Reserved. -->
-    <!--  Build Date: Mon Mar 10 2014 16:21:26 GMT-0700 (PDT) -->
+    <!--  Build Date: Tue Mar 11 2014 19:28:16 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon Mar 10 2014 16:21:26 GMT-0700 (PDT)";
-        var CHECKSUM = 2267811702888;
+        var APP_BUILD_DATE = "Tue Mar 11 2014 19:28:16 GMT-0700 (PDT)";
+        var CHECKSUM = 2290149090440;
     </script>
     
     <script type="text/javascript" src="/apps/x/sdk.js"></script>
@@ -597,7 +597,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             autoLoad: true,
             sorters: [
                 {
-                    property: 'Name',
+                    property: 'Parent',
                     direction: 'DESC'
                 }
             ],
@@ -612,6 +612,7 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
             wsapiModel: taskStoreConfig.model
         });
         
+        console.log("task store config", taskStoreConfig);
         var taskStore = Ext.create("Gnt.data.TaskStore", taskStoreConfig);
         taskStore.on('load', this._onLoaded, this);
 
@@ -716,6 +717,18 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
     },
 
     _onLoaded: function(taskStore, model, records) {
+        Ext.Array.each(records,function(record){
+            // put the parent back for columns
+            record.set("_Parent",record.raw.Parent);
+            // put the parent id in for sorting
+            if ( record.raw.Parent ){
+                record.set("Notes", record.raw.Parent.FormattedID);
+            } else { 
+                record.set("Notes", "-");
+            }
+        });
+        taskStore.sort({ property: 'Notes', direction: 'ASC' });
+        
         if (this.isVisible()) {
             this._ieFixHeaderWidthComputeIssue();
 
@@ -1299,8 +1312,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 property:'Ordinal',
                 direction:'Asc'
             },
-            limit: 1,
-            pageSize: 1,
+            limit: 2,
+            pageSize: 2,
             filters: [
                 {
                     property: 'Parent.Name',
@@ -1428,7 +1441,8 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             'PercentDoneByStoryCount',
             'PercentDoneByStoryPlanEstimate',
             'LastUpdateDate',
-            'Parent'
+            'Parent',
+            'Notes'
         ];
 
 
@@ -1642,29 +1656,41 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
                 menuDisabled:true,
                 renderer:function (value, metaData,record) {
                     return Ext.create('Ext.XTemplate',
-                            '{[this.showNotRecentlyUpdated()]}<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
+                        '{[this.showNotRecentlyUpdated()]}<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
+                        {
+                            createDetailUrl:function (values) {
+                                return Rally.nav.Manager.getDetailUrl(values);
+                            },
+                            showNotRecentlyUpdated: function() {
+                                var icon = " ";
+                                if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
+                                    icon = "<span class='icon-history'> </span>";
+                                }
+                                return icon;
+                            }
+                        }).apply(record.data);
+                }
+            },
+            {
+                xtype:'treecolumn',
+                header: 'Parent',
+                dataIndex: 'Notes', /* using another field because parent has special meaning */
+                sortable: true,
+                menuDisabled:true,
+                renderer: function( value, metaData,record ) {
+                    var display_value = "";
+                    if ( record.get("_Parent") ){
+                        display_value = Ext.create('Ext.XTemplate',
+                            '<a href="{[this.createDetailUrl(values)]}" target="_top">{FormattedID}:</a> {Name}',
                             {
                                 createDetailUrl:function (values) {
                                     return Rally.nav.Manager.getDetailUrl(values);
-                                },
-                                showNotRecentlyUpdated: function() {
-                                    var icon = " ";
-                                    if ( Rally.util.DateTime.getDifference(new Date(), record.get('LastUpdateDate'), 'month') > 3 ) {
-                                        icon = "<span class='icon-history'> </span>";
-                                    }
-                                    return icon;
                                 }
-                            }).apply(record.data);
+                            }).apply(record.get("_Parent"));
+                    }
+                    return display_value;
                 }
-            }/*,
-            {
-                header: 'Parent',
-                dataIndex: 'Parent',
-                renderer: function( value, metaData,record ) {
-                    console.log(value,record);
-                    return value.FormattedID;
-                }
-            }*/
+            }
         ];
     },
 
