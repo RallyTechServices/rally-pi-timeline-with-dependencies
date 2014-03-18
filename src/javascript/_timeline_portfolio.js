@@ -71,7 +71,11 @@ Ext.define('Rally.alm.ui.timeline.PortfolioItemTimeline', {
             weekendsAreWorkdays:true,
             sorters:[
                 {
-                    property:'Rank',
+                    property:'PlannedStartDate',
+                    direction:'ASC'
+                },
+                {
+                    property: 'PlannedEndDate',
                     direction:'ASC'
                 }
             ]

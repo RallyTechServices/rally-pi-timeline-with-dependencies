@@ -152,6 +152,18 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
                 {
                     property: 'Parent',
                     direction: 'DESC'
+                },
+                {
+                    property: 'PlannedStartDate',
+                    direction: 'DESC'
+                },
+                {
+                    property: 'PlannedEndDate',
+                    direction: 'DESC'
+                },
+                {
+                    property:'Rank',
+                    direction: 'ASC'
                 }
             ],
             listeners: {
@@ -279,7 +291,21 @@ Ext.define('Rally.alm.ui.timeline.Timeline', {
                 record.set("Notes", "-");
             }
         });
-        taskStore.sort({ property: 'Notes', direction: 'ASC' });
+        taskStore.sort(
+            { property: 'Notes', direction: 'ASC' },
+            {
+                property: 'PlannedStartDate',
+                direction: 'DESC'
+            },
+            {
+                property: 'PlannedEndDate',
+                direction: 'DESC'
+            },
+            {
+                property:'Rank',
+                direction: 'ASC'
+            }
+        );
         
         if (this.isVisible()) {
             this._ieFixHeaderWidthComputeIssue();

@@ -76,3 +76,8 @@ td.sch-timetd .x-grid-cell-inner {
 {
     border-color: red;
 }
+
+.sch-ganttpanel .sch-gantt-parent-task .sch-gantt-task-bar,.sch-ganttpanel .sch-gantt-parent-task .sch-gantt-parenttask-bar,.sch-ganttpanel .sch-gantt-task .sch-gantt-task-bar,.sch-ganttpanel .sch-gantt-task .sch-gantt-parenttask-bar {
+   
+    background-color: gray; 
+}

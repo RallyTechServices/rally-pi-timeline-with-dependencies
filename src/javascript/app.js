@@ -51,13 +51,6 @@ Ext.define('CustomApp', {
             }
         });
         this.dialog.show();
-//        Ext.create('Rally.ui.popover.PercentDonePopover', {
-//            target: Ext.get(evt.target),
-//            percentDoneData: taskRecord.data,
-//            percentDoneName: 'PercentDoneByStoryCount',
-//            piRef: taskRecord.data._ref,
-//            viewportPadding: [15,25,15,215]
-//        });
     },
     showDependencyDialog: function(dependencyRecord,gantt){
         this.logger.log('showDependencyDialog ', dependencyRecord);
