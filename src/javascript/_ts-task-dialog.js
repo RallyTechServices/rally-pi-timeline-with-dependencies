@@ -7,7 +7,8 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
          * 
          * The task record shown on the timeline
          */
-        artifact: null
+        artifact: null,
+        percentDoneName: 'PercentDoneByStoryCount'
     },
     items: { 
         xtype:'panel',
@@ -21,7 +22,9 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
             }
         ]
     },
-   constructor: function(config) {
+    cls: 'percentDonePopover',
+    
+    constructor: function(config) {
         this.mergeConfig(config);
 
         this.callParent([this.config]);
@@ -55,6 +58,12 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
             this.down('panel').add({
                 xtype:'container',
                 html: 'Last changed ' + Rally.util.DateTime.getDifference(new Date(), this.last_update_date,'day') + ' days ago'
+            });
+            
+            this.down('panel').add({
+                xtype:'container',
+                cls: 'popover percentDonePopover',
+                html: this._buildPopoverContent(this.artifact.getData())
             });
             
             var container = this.down('panel').add({
@@ -133,6 +142,127 @@ Ext.define('Rally.technicalservices.dialog.TaskDialog',{
                 }
             ]
         });
+    },
+    // Stolen from original popover
+    _buildPopoverContent: function(percentDoneData) {
+        var html = '';
 
+        html += this.getStatusTpl().apply(percentDoneData);
+        html += '<div class="percentDoneContainer">';
+
+        html += this.getAcceptedTpl().apply(percentDoneData);
+
+        if (!Ext.isEmpty(percentDoneData.ActualEndDate)) {
+            html += this.getActualEndDateTpl().apply(percentDoneData);
+        }
+
+        //ajax request
+//        if(this._shouldShowReleaseSection(percentDoneData)) {
+//            html += this.getReleaseTpl().apply(percentDoneData);
+//        }
+
+//        if (this._shouldShowNotes(percentDoneData)) {
+//            html += this.getNotesTpl().apply(percentDoneData);
+//        }
+
+        html += '</div>';
+
+        return html;
+    },
+    getStatusTpl: function() {
+        var me = this;
+
+        return Ext.create('Ext.XTemplate',
+            '<h2>{[this.calculateStatus(values)]}</h2>', {
+            calculateStatus: function(recordData) {
+                var health = Rally.util.HealthColorCalculator.calculateHealthColorForPortfolioItemData(recordData, me.percentDoneName);
+                return health.label;
+            }
+        });
+    },
+    getAcceptedTpl: function() {
+        return Ext.create('Ext.XTemplate',
+            '<div class="percentDoneLine">',
+                '{[this.renderPercentDoneByStoryPlanEstimate(values)]}',
+                '<div class="percentDoneText">{AcceptedLeafStoryPlanEstimateTotal} of {LeafStoryPlanEstimateTotal} Points Accepted</div>',
+            '</div>',
+            '<div class="percentDoneLine">',
+                '{[this.renderPercentDoneByStoryCount(values)]}',
+                '<div class="percentDoneText">{AcceptedLeafStoryCount} of {LeafStoryCount} User Stories Accepted</div>',
+            '</div>',
+            '<tpl if="UnEstimatedLeafStoryCount &gt; 0">',
+                '<div class="dangerNotification percentDoneLine">',
+                    'Missing Estimates: ',
+                    '<div><b>{UnEstimatedLeafStoryCount} User Stor{[values.UnEstimatedLeafStoryCount == 1? "y" : "ies"]}</b></div>',
+                '</div>',
+            '</tpl>',
+            '<tpl if="!PlannedEndDate && !ActualEndDate">',
+                '<div class="dangerNotification percentDoneLine">Missing Planned End Date</div>',
+            '</tpl>', {
+            renderPercentDoneByStoryPlanEstimate: function(recordData) {
+                return Ext.create('Rally.ui.renderer.template.progressbar.PortfolioItemPercentDoneTemplate', {
+                    percentDoneName: 'PercentDoneByStoryPlanEstimate',
+                    height: '15px',
+                    width: '50px',
+                    isClickable: false
+                }).apply(recordData);
+            },
+            renderPercentDoneByStoryCount: function(recordData) {
+                return Ext.create('Rally.ui.renderer.template.progressbar.PortfolioItemPercentDoneTemplate', {
+                    percentDoneName: 'PercentDoneByStoryCount',
+                    height: '15px',
+                    width: '50px',
+                    isClickable: false
+                }).apply(recordData);
+            }
+        });
+    },
+
+    getActualEndDateTpl: function() {
+        var getDateFn = Ext.bind(this._getDate,this);
+        return Ext.create('Ext.XTemplate',
+            '<hr/>',
+            '<h3>ACTUAL END DATE</h3>',
+            '<div class="actualEndDateInfo percentDoneLine">',
+                '{[this.formatDate(values.ActualEndDate)]}',
+                '<tpl if="PlannedEndDate">',
+                    ' ({[this.getEstimateMessage(values)]})',
+                '</tpl></div>', {
+            getEstimateMessage: function(values) {
+                var message;
+
+                var actualEnd = getDateFn(values.ActualEndDate);
+                var plannedEnd = getDateFn(values.PlannedEndDate);
+
+                var diff = Rally.util.DateTime.getDifference(plannedEnd, actualEnd, 'day');
+                if (diff === 0) {
+                    message = 'on time';
+                } else if (diff > 0) {
+                    message = diff + ' day' + (diff === 1 ? '' : 's') + ' early';
+                } else {
+                    diff = Math.abs(diff);
+                    message = diff + ' day' + (diff === 1 ? '' : 's') + ' late';
+                }
+
+                return message;
+            },
+            formatDate: Ext.bind(this._formatDate,this)
+        });
+    },
+
+    getNotesTpl: function() {
+        return Ext.create('Ext.XTemplate',
+            '<hr/>',
+            '<h3>NOTES</h3>',
+            '<div class="percentDoneLine">{Notes}</div>');
+    },
+
+    _getDate: function(dateString){
+        return Ext.Date.parse(dateString,'c') || new Date(Date.parse(dateString));
+    },
+
+    _formatDate: function(dateString) {
+        var date = this._getDate(dateString);
+        return Rally.util.DateTime.formatWithDefault(date);
     }
 });

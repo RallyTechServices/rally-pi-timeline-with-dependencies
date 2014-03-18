@@ -24,8 +24,8 @@ Ext.define('CustomApp', {
             listeners: {
                 scope: this,
                 taskclick: function( gantt, taskRecord, evt, eOpts ) {
-                    this.logger.log("clicked ", taskRecord);
-                    this.showTaskDialog(taskRecord,gantt);
+                    this.logger.log("clicked ", taskRecord, evt);
+                    this.showTaskDialog(taskRecord,gantt, evt);
                 },
                 dependencydblclick: function(gantt, record, evt, target, eOpts) {
                 	this.showDependencyDialog(record,gantt);
@@ -33,12 +33,13 @@ Ext.define('CustomApp', {
             }
         });
     },
-    showTaskDialog: function(taskRecord,gantt){
+    showTaskDialog: function(taskRecord,gantt,evt){
         this.logger.log('showTaskDialog ', taskRecord.get('PlannedStartDate'),taskRecord.get('PlannedEndDate'));
         if ( this.dialog ) { this.dialog.destroy(); }
         this.dialog = Ext.create('Rally.technicalservices.dialog.TaskDialog',{
             artifact: taskRecord,
             title: taskRecord.get('FormattedID') + ": " + taskRecord.get('Name'),
+            percentDoneName: 'PercentDoneByStoryCount',
             listeners: {
                 scope: this,
                 updateClicked: function(dialog, artifact, planned_start_date, planned_end_date) {
@@ -50,6 +51,13 @@ Ext.define('CustomApp', {
             }
         });
         this.dialog.show();
+//        Ext.create('Rally.ui.popover.PercentDonePopover', {
+//            target: Ext.get(evt.target),
+//            percentDoneData: taskRecord.data,
+//            percentDoneName: 'PercentDoneByStoryCount',
+//            piRef: taskRecord.data._ref,
+//            viewportPadding: [15,25,15,215]
+//        });
     },
     showDependencyDialog: function(dependencyRecord,gantt){
         this.logger.log('showDependencyDialog ', dependencyRecord);
